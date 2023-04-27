@@ -1,20 +1,14 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import {View} from "react-native";
+import Navegador from './Comp/Navegator';
 
-export default function App() {
+
+function App() {
   return (
-    <View style={styles.container}>
-      <Text>Gode</Text>
-      <StatusBar style="auto" />
+    <View style={{ flex: 1 }}>
+      <Navegador />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
