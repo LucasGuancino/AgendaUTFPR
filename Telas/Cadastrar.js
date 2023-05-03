@@ -1,5 +1,5 @@
 import { useState, Component } from 'react';
-import { StyleSheet, Text, View, TextInput,TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, TextInput,TouchableOpacity, Image} from 'react-native';
 import CheckBox from '../Comp/CheckBox';
 import { useNavigation } from '@react-navigation/native';
 
@@ -18,26 +18,26 @@ export default function App(){
   }
   
   return(
-    <View style={styles.container}>
-      <Text style={styles.Cadastrar}>
-        Cadastrar
-      </Text>      
-      <TextInput placeholder='   Nome' style={styles.TextInput} onChangeText={text=>setNome(text)} /> 
-      <TextInput placeholder='   Sobrenome' style={styles.TextInput} onChangeText={text=>setSobrenome(text)} /> 
-      <TextInput placeholder='   Telefone' style={styles.TextInput} onChangeText={text=>setTelefone(Number)} /> 
-      <TextInput placeholder='   Email' style={styles.TextInput} onChangeText={text=>setEmail(text)} />  
-      <TextInput secureTextEntry={true} placeholder='   Senha' style={styles.TextInput} onChangeText={text=>setSenha(text)} />  
-      <TextInput secureTextEntry={true} placeholder='   Confirmar senha' style={styles.TextInput} onChangeText={text=>setConfirmarsenha(text)} />  
-    
-      <CheckBox />
-            <TouchableOpacity style={styles.btnCadastro} onPress={()=>cadastro()}>
-      <Text style={{color:'white', textAlign: 'center', fontSize:16}}> Cadastrar</Text>
+      <View style={styles.container}>
+        <Text style={styles.Cadastrar}>
+            Cadastrar
+        </Text>      
+        <TextInput placeholder='   Nome' style={styles.TextInput} onChangeText={text=>setNome(text)} /> 
+        <TextInput placeholder='   Sobrenome' style={styles.TextInput} onChangeText={text=>setSobrenome(text)} /> 
+        <TextInput placeholder='   Telefone' style={styles.TextInput} onChangeText={text=>setTelefone(Number)} /> 
+        <TextInput placeholder='   Email' style={styles.TextInput} onChangeText={text=>setEmail(text)} />  
+        <TextInput secureTextEntry={true} placeholder='   Senha' style={styles.TextInput} onChangeText={text=>setSenha(text)} />  
+        <TextInput secureTextEntry={true} placeholder='   Confirmar senha' style={styles.TextInput} onChangeText={text=>setConfirmarsenha(text)} />  
+        
+        <CheckBox />
+                <TouchableOpacity style={styles.btnCadastro} onPress={()=>cadastro()}>
+        <Text style={{color:'white', textAlign: 'center', fontSize:16}}> Cadastrar</Text>
 
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-      <Text style={styles.Terlogin}> Já possui uma conta? Faça o Login! </Text>
-      </TouchableOpacity>
-    </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        <Text style={styles.Terlogin}> Já possui uma conta? Faça o Login! </Text>
+        </TouchableOpacity>
+      </View>
   )
 }
 const styles = StyleSheet.create({
