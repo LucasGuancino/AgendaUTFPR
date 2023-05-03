@@ -10,6 +10,7 @@ import {
   TouchableWithoutFeedback
 } from "react-native";
 import Footer from "../Comp/Footer";
+import { useNavigation } from '@react-navigation/native';
 
 const Foto = require("../icons/foto.png");
 const linkgoogle = require("../icons/googleagenda.png");
@@ -27,6 +28,7 @@ const Profile = () => {
   const [email, setEmail] = useState("");
   const [curso, setCurso] = useState("");
   const [campus, setCampus] = useState("");
+  const navigation = useNavigation();
 
   const handleEditPress = () => {
     setShowPopup(true);
@@ -63,17 +65,17 @@ const Profile = () => {
         <View style={styles.item}>
           <Text style={styles.description}>Cãmpus:</Text>
         </View>
-        <TouchableOpacity style={styles.button}>
-          <Image style={styles.buttonIcon} source={linkgoogle} />
+        <TouchableOpacity style={styles.button} onPress={() => alert('Ainda não é possivel sincronizar os dados Google Agenda')}>
+          <Image style={styles.buttonIcon} source={linkgoogle}/>
           <Text style={styles.buttonText}>Sincronizar com Google Agenda</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={() => alert('Ainda não é possivel sincronizar os dados UTFPR')}>
           <Image style={styles.buttonIcon} source={linkutf} />
           <Text style={styles.buttonText}>
             Sincronizar com sistema da UTFPR
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.imageContainer}>
+        <TouchableOpacity style={styles.imageContainer} onPress={() => navigation.navigate('Inicial')}>
           <Image style={styles.image} source={sair} />
         </TouchableOpacity>
         <Modal visible={showPopup} transparent>
