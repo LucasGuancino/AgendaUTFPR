@@ -33,7 +33,6 @@ const styles = StyleSheet.create({
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'baseline',
-    alignItems: 'center'
   },
   checkboxIcon: {
 

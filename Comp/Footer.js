@@ -10,7 +10,7 @@ const Footer = () => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={[styles.button, styles.leftButton]}>
+      <TouchableOpacity style={[styles.button, styles.leftButton]} onPress={() => navigation.navigate('Calendario')}>
         <Image source={calendarIcon} style={styles.buttonImage} />
       </TouchableOpacity>
       <TouchableOpacity  style={[styles.button, styles.centerButton]} onPress={() => navigation.navigate('Home')}>

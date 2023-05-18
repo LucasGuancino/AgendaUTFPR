@@ -19,7 +19,7 @@ const Profile = () => {
           <Text style={styles.item1}> Olá Aluno(a)</Text>
         </View>
         <Image source={logoIcon} style={styles.logo} />
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Calendario')}>
           <Text style={styles.buttonText}>Calendário</Text>
         </TouchableOpacity>
         <View style={styles.item}>
@@ -50,10 +50,6 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: "#fff",
-    },
-    header: {
-      alignItems: "center",
-      marginTop: 40
     },
     avatar: {
       width: 60,
@@ -109,11 +105,6 @@ const styles = StyleSheet.create({
       fontWeight: "bold",
       marginTop: 5
     },
-    itemIcon: {
-      width: 24,
-      height: 24,
-      marginRight: 10
-    },
     description: {
       fontSize: 16,
       marginBottom: -15,
@@ -133,26 +124,12 @@ const styles = StyleSheet.create({
       width: 240,
       alignItems: "center"
     },
-    buttonIcon: {
-      width: 20,
-      height: 20,
-      marginRight: 10
-      
-    },
     buttonText: {
       color: "white",
       fontWeight: "bold",
       textAlign: "center",
       fontSize: 20,
     },
-    image: {
-      width: 101,
-      height: 45
-    },
-    imageContainer: {
-      justifyContent: "center",
-      alignItems: "center"
-    }
   });
 
   export default Profile;

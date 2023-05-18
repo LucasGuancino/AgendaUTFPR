@@ -176,11 +176,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10
   },
-  itemIcon: {
-    width: 24,
-    height: 24,
-    marginRight: 10
-  },
   description: {
     fontSize: 16,
     marginBottom: 10
@@ -256,18 +251,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 20
-  },
-  popupbutton: {
-    backgroundColor: "#F24E1E",
-    padding: 10,
-    borderRadius: 20,
-    marginBottom: 10,
-    width: "50%"
-  },
-  popupbuttonText: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center"
   },
   closebutton: {
     position: "absolute",

@@ -1,88 +1,72 @@
-import React from "react";
-import { useState} from 'react';
-import { Image, StyleSheet, Text, View, TouchableOpacity, TextInput} from 'react-native';
+import React from 'react';
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 const logoIcon = require("../icons/Logo.png");
 
-export default function App() {
-  const navigation = useNavigation();  
-  const [login, setLogin] = useState('')
-  const [senha, setSenha] = useState('')
-
+const LoginScreen = () => {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <Image source={logoIcon} style={styles.logo} />
-      <Text style={styles.title}>Login</Text>
-      <TextInput placeholder='       E-mail' style={styles.TextInput} onChangeText={text=>setLogin(text)} />
-      <TextInput secureTextEntry={true} placeholder='       Senha' style={styles.TextInput} onChangeText={text=>setSenha(text)} /> 
-      <Text style={styles.text}>Esqueceu a Senha?</Text>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
-          <Text style={styles.buttonText}>Entrar</Text>
-        </TouchableOpacity>
+      <View style={styles.inputContainer}>
+        <TextInput style={styles.input} placeholder="E-mail" />
+        <TextInput style={styles.input} placeholder="Senha" secureTextEntry={true} />
       </View>
-      <Text style={styles.footer} onPress={() => navigation.navigate('Cadastrar')}>Não possui uma conta? Crie Agora!</Text>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
+        <Text style={styles.buttonText}>Acessar</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate('Cadastrar')}>
+        <Text style={styles.footerText}>Não possui uma conta? Crie agora!</Text>
+      </TouchableOpacity>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#fff"
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    backgroundColor: '#FFFFFF',
   },
   logo: {
     width: 136,
     height: 144,
-    marginBottom: 20
+    resizeMode: 'contain',
+    marginBottom: 40,
   },
-  title: {
-    fontWeight: "bold",
-    fontSize: 30,
-    color: "black",
-    marginBottom: 50
+  inputContainer: {
+    marginBottom: 20,
   },
-  buttonContainer: {
-    marginTop: 25,
-    marginBottom: 20
+  input: {
+    width: 300,
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#CCCCCC',
+    borderRadius: 15,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    backgroundColor: '#D9D9D9',
   },
   button: {
-    backgroundColor: "#F24E1E",
-    padding: 10,
-    borderRadius: 20,
+    backgroundColor: '#F24E1E',
     width: 200,
-    alignItems: "center",
-    marginBottom: 10
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+    marginBottom: 20,
   },
   buttonText: {
-    color: "white",
-    fontSize: 18
+    color: '#FFFFFF',
+    fontSize: 16,
   },
-  footer: {
-    color: "black",
-    position: "absolute",
-    bottom: 0,
-    marginBottom: 40,
+  footerText: {
     fontSize: 12,
-    fontWeight: "bold"
+    fontWeight: 'bold'
   },
-  TextInput:{
-    width:'80%',
-    height: 50,
-    backgroundColor:'#d3d3d3',
-    textAlignVertical: 'center',
-    borderRadius: 20,
-    marginBottom: 15,
-    fontSize: 14
-  },
-  text:{
-    fontWeight: "bold",
-    fontSize: 15,
-    color: "black",
-    marginBottom: 12,
-    marginTop: 10
-  }
 });
+
+export default LoginScreen;
