@@ -9,6 +9,7 @@ import Calendario from "../Telas/Calendario";
 import InfoAgendamento from "../Telas/InfoAgendamento";
 import Relatorio from "../Telas/Relatorio";
 import Agendamento from "../Telas/Agendamento";
+import Agendar from "../Telas/Agendar";
 
 const Stack = createStackNavigator();
 
@@ -25,6 +26,7 @@ function Navegador() {
         <Stack.Screen name="InfoAgendamento" component={InfoAgendamento} options={{ headerShown: false }} />
         <Stack.Screen name="Relatorio" component={Relatorio} options={{ headerShown: false }} />
         <Stack.Screen name="Agendamento" component={Agendamento} options={{ headerShown: false }} />
+        <Stack.Screen name="Agendar" component={Agendar} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
