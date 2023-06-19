@@ -58,10 +58,10 @@ export default function Agenda({ route }) {
   };
   
 
-  const handleRemoveTimeInput = () => {
-    if (timeInputs.length > 1) {
-      setTimeInputs(timeInputs.slice(0, timeInputs.length - 1));
-    }
+  const handleRemoveTimeInput = (index) => {
+    const updatedAgendas = [...agendas];
+    updatedAgendas.splice(index, 1);
+    setAgendas(updatedAgendas);
   };
 
   async function SalvarAlteracoes() {
