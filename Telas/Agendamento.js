@@ -14,64 +14,58 @@ import firebase from '../src/firebaseConfig';
 const voltar = require("../icons/voltar.png");
 
 export default function Agendamento({ route }) {
-  const { codigo } = route.params;
+  const { dateString, selectedUser, index } = route.params;
   const navigation = useNavigation();
   const [horafim, setHoraFim] = useState('');
   const [horainicio, setHoraInicio] = useState('');
   const [local, setLocal] = useState('');
   const [descricao, setDescricao] = useState('');
-  const [nomeAluno, setNomeAluno] = useState('');
   const [nome, setNome] = useState('');
   const [sobrenome, setSobrenome] = useState('');
   const user = firebase.auth().currentUser;
-  let userId = '';
 
   useEffect(() => {    
-    async function carregaDados() {
-      const Servidor = 'Lucas';
-      const usersRef = firebase.database().ref('Usuarios');
-    
-      usersRef.on('value', (snapshot) => {
-        snapshot.forEach((childSnapshot) => {
-          const userData = childSnapshot.val();
-          const nome = userData.nome;
-          const childUserId = childSnapshot.key;
-      
-          if (nome === Servidor) {
-            userId = childUserId;
-          }
-        });
-      });
-      await firebase.database().ref("Agenda").child(userId).child(codigo).on("value", (snapshot) => { // passar por parametro id do servidor e o index
+      const AgendaRef = firebase.database().ref("Agenda").child(dateString).child(selectedUser).child(index);
+        AgendaRef.once("value", (snapshot) => {
           setHoraFim(snapshot.val().endTime);
           setHoraInicio(snapshot.val().startTime);
           setLocal(snapshot.val().location);
         });
-    }
-    carregaDados();
   }, []);
 
-  async function agendarDados(){
-    const refUsuarios = firebase.database().ref('Usuarios').child(user.uid);
-  
-    refUsuarios.once('value', (snapshot) => {
-      const userData = snapshot.val();
-      setNome(userData.nome);
-      setSobrenome(userData.sobrenome);
-    });
-
-    const userRef = firebase.database().ref('Agenda').child(userId).child(0); // passar por parametro id do servidor e o index
+  async function agendarDados() {
     try {
-      const nomeAluno = '${nome.trim()} ${sobrenome.trim()}'
-      await userRef.update({
-        descricao: descricao,
-        nomeAluno: nomeAluno,        
+      const refUsuarios = firebase.database().ref("Usuarios").child(user.uid);
+  
+      refUsuarios.once("value", (snapshot) => {
+        const userData = snapshot.val();
+        setNome(userData.nome);
+        setSobrenome(userData.sobrenome);
+  
+        const nomeAluno = `${userData.nome.trim()} ${userData.sobrenome.trim()}`;
+        console.log(nomeAluno);
+  
+        const userRef = firebase
+          .database()
+          .ref("Agenda")
+          .child(dateString)
+          .child(selectedUser)
+          .child(index);
+  
+        userRef.update({
+          descricao: descricao,
+          nomeAluno: nomeAluno,
+        });
+  
+        alert(descricao + " foi agendado com sucesso.");
+        navigation.goBack();
       });
-      alert(descricao + ' Foi agendado com sucesso.');
     } catch (error) {
-      alert('Ocorreu um erro ao fazer o agendamento.');
+      alert("Ocorreu um erro ao fazer o agendamento.");
     }
-  };
+  }
+  
+  
 
   return (
     <View style={styles.container}>
@@ -92,7 +86,7 @@ export default function Agendamento({ route }) {
       </View>
 
       <View>
-        <Text style={styles.date}>25/05/2023</Text>
+        <Text style={styles.date}>{dateString}</Text>
       </View>
 
       <View style={styles.containerDois}>

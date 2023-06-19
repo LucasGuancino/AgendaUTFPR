@@ -6,17 +6,19 @@ import firebase from '../src/firebaseConfig';
 import addIcon from '../icons/adicionar.png'; 
 import removeIcon from '../icons/remover.png'; 
 
-export default function Agenda(){
+export default function Agenda({ route }) {
+  const { dateString } = route.params;
   const navigation = useNavigation();
   const [timeInputs, setTimeInputs] = useState([{ startTime: '', endTime: '', location: '', nomeServidor: '' }]);
   const user = firebase.auth().currentUser;
   const [userName, setUserName] = useState('');
   const [sobrenome, setSobrenome] = useState('');
   const [nomeServidor, setNomeServidor] = useState('');
+  const [agendas, setAgendas] = useState([]);
 
   useEffect(() => {
     const userRef = firebase.database().ref('Usuarios').child(user.uid);
-  
+
     userRef.once('value', (snapshot) => {
       const userData = snapshot.val();
       setUserName(userData.nome);
@@ -29,9 +31,32 @@ export default function Agenda(){
     setNomeServidor(nomeServidorAtualizado);
   }, [userName, sobrenome]);
 
+  useEffect(() => {
+    const loadAgendas = async () => {
+      try {
+        const snapshot = await firebase.database().ref('Agenda').child(dateString).child(user.uid).once('value');
+        const agendaData = snapshot.val();
+        if (agendaData) {
+          const loadedAgendas = Object.values(agendaData);
+          setAgendas(loadedAgendas);
+        }
+      } catch (error) {
+        console.log(error);
+        alert("Erro ao carregar as agendas.");
+      }
+    };
+
+    loadAgendas();
+  }, [dateString, user.uid]);
+
   const handleAddTimeInput = () => {
-    setTimeInputs([...timeInputs, { startTime: '', endTime: '', location: '', nomeServidor: nomeServidor }]);
+    const newTimeInput = { startTime: '', endTime: '', location: '', nomeServidor: nomeServidor };
+    const updatedAgendas = [...agendas, newTimeInput];
+  
+    setTimeInputs(updatedAgendas);
+    setAgendas(updatedAgendas);
   };
+  
 
   const handleRemoveTimeInput = () => {
     if (timeInputs.length > 1) {
@@ -41,24 +66,26 @@ export default function Agenda(){
 
   async function SalvarAlteracoes() {
     try {
-      const updatedTimeInputs = [...timeInputs];
+      const updatedAgendas = [...agendas];
       await Promise.all(
-        updatedTimeInputs.map(async (input, index) => {
-          if (input.nomeServidor === '') {
-            input.nomeServidor = `${userName.trim()} ${sobrenome.trim()}`;
-            updatedTimeInputs[index] = input;
+        updatedAgendas.map(async (agenda, index) => {
+          if (agenda.nomeServidor === '') {
+            agenda.nomeServidor = `${userName.trim()} ${sobrenome.trim()}`;
+            updatedAgendas[index] = agenda;
           }
         })
       );
   
-      const userRef = firebase.database().ref('Agenda').child(user.uid);
-      await userRef.set(updatedTimeInputs);
+      const userRef = firebase.database().ref('Agenda').child(dateString).child(user.uid);
+      await userRef.set(updatedAgendas);
       alert("Agenda salva com sucesso!");
+      navigation.goBack();
     } catch (error) {
       console.log(error);
       alert("Erro ao salvar a agenda.");
     }
   }
+  
 
   return (
     <View style={styles.container}>
@@ -71,43 +98,43 @@ export default function Agenda(){
         </TouchableOpacity>
         <Text style={styles.name}>{userName}</Text>       
       </View>
-      <Text style={styles.subtitle}>Defina seus horarios do dia:</Text>
-      <Text style={styles.date}>25 de Maio de 2023</Text>
-      {timeInputs.map((timeInput, index) => (
+      <Text style={styles.subtitle}>Defina seus horários do dia:</Text>
+      <Text style={styles.date}>{dateString}</Text>
+      {agendas.map((agenda, index) => (
         <View key={index}>
           <View style={styles.timeInputsContainer}>
             <TextInput
               style={styles.timeInput}
               placeholder="08:00"
-              value={timeInput.startTime}
+              value={agenda.startTime}
               onChangeText={text => {
-                const updatedInputs = [...timeInputs];
-                updatedInputs[index].startTime = text;
-                setTimeInputs(updatedInputs);
+                const updatedAgendas = [...agendas];
+                updatedAgendas[index].startTime = text;
+                setAgendas(updatedAgendas);
               }}
             />
             <Text style={styles.timeSeparator}>-</Text>
             <TextInput
               style={styles.timeInput}
               placeholder="17:00"
-              value={timeInput.endTime}
+              value={agenda.endTime}
               onChangeText={text => {
-                const updatedInputs = [...timeInputs];
-                updatedInputs[index].endTime = text;
-                setTimeInputs(updatedInputs);
+                const updatedAgendas = [...agendas];
+                updatedAgendas[index].endTime = text;
+                setAgendas(updatedAgendas);
               }}
             />
             <TextInput
               style={styles.placeInput}
               placeholder="Local"
-              value={timeInput.location}
+              value={agenda.location}
               onChangeText={text => {
-                const updatedInputs = [...timeInputs];
-                updatedInputs[index].location = text;
-                setTimeInputs(updatedInputs);
+                const updatedAgendas = [...agendas];
+                updatedAgendas[index].location = text;
+                setAgendas(updatedAgendas);
               }}
             />
-            {index === timeInputs.length - 1 ? (
+            {index === agendas.length - 1 ? (
               <TouchableOpacity onPress={handleAddTimeInput}>
                 <Image style={styles.icon} source={addIcon} />
               </TouchableOpacity>

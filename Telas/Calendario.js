@@ -4,6 +4,7 @@ import { Calendar, LocaleConfig } from 'react-native-calendars';
 import Footer from "../Comp/Footer";
 import { useNavigation } from '@react-navigation/native';
 import firebase from '../src/firebaseConfig';
+import { Picker } from '@react-native-picker/picker';
 
 const inativoIcon = require("../icons/inativo.png")
 const ativoIcon = require("../icons/ativo.png")
@@ -17,18 +18,35 @@ LocaleConfig.locales['pt'] = {
 };
 LocaleConfig.defaultLocale = 'pt';
 
-export default function Calendario(){
+export default function Calendario() {
   const navigation = useNavigation();
   const [isServidor, setIsServidor] = useState(false);
-  const [filtro, setFiltro] = useState('');
+  const [users, setUsers] = useState([]);
   const user = firebase.auth().currentUser;
-  
+  const [selectedUser, setSelectedUser] = useState('');
+
   useEffect(() => {
-    const userRef = firebase.database().ref('Usuarios').child(user.uid);  
+    const userRef = firebase.database().ref('Usuarios').child(user.uid);
     userRef.once('value', (snapshot) => {
       const userData = snapshot.val();
       setIsServidor(userData.isServidor);
     });
+  }, []);
+
+  useEffect(() => {
+    const usersRef = firebase.database().ref('Usuarios');
+    usersRef
+      .orderByChild('isServidor')
+      .equalTo(true)
+      .once('value', (snapshot) => {
+        const users = snapshot.val();
+        const userArray = Object.entries(users).map(([key, value]) => ({
+          id: key,
+          nome: value.nome,
+          sobrenome: value.sobrenome
+        }));
+        setUsers(userArray);
+      });
   }, []);
 
   const initialMarkedDates = {
@@ -50,9 +68,9 @@ export default function Calendario(){
   const [selectedDate, setSelectedDate] = useState("");
 
   const handleDateSelect = (date) => {
-    
     const newMarkedDates = { ...initialMarkedDates };
     const dateString = date.dateString;
+    console.log(date.dateString);
     if (selectedDate) {
       newMarkedDates[selectedDate] = {
         ...newMarkedDates[selectedDate],
@@ -66,10 +84,11 @@ export default function Calendario(){
     };
     setSelectedDate(dateString);
     setMarkedDates(newMarkedDates);
-    if(isServidor){
-      navigation.navigate('InfoAgendamento');
-    }else{
-      navigation.navigate('InfoAgendamentoUsuario');
+
+    if (isServidor) {
+      navigation.navigate('InfoAgendamento', { dateString });
+    } else {
+      navigation.navigate('InfoAgendamentoUsuario', { dateString, selectedUser });
     }
   };
 
@@ -94,29 +113,40 @@ export default function Calendario(){
     }
   });
 
-  return(
+  return (
     <View style={styles.container}>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button}>          
-          <TextInput
-              style={styles.buttonText}
-              placeholder="Filtro"
-              onChangeText={setFiltro}
-              value={filtro}
-            />
-        </TouchableOpacity>
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={selectedUser}
+            onValueChange={(itemValue) => setSelectedUser(itemValue)}
+          >
+            <Picker.Item label="Selecione um Servidor" value="" />
+            {users.map((user) => (
+              <Picker.Item
+                key={user.id}
+                label={`${user.nome} ${user.sobrenome}`}
+                value={user.id}
+              />
+            ))}
+          </Picker>
+        </View>
       </View>
-      <Text style={styles.text}>Mostrando a agenda de:</Text>
+      {isServidor ? (
+      <Text style={styles.text}>Mostrando a sua agenda:</Text>
+       ) : (
+      <Text style={styles.text}>Mostrando a agenda do servidor selecionado:</Text>
+      )}
       <View style={containerStyles.container}>
-      <Calendar
-        style={calendarStyles.calendar}
-        onDayPress={handleDateSelect}
-        markedDates={markedDates}
-        markingType="simple"
-      />
+        <Calendar
+          style={calendarStyles.calendar}
+          onDayPress={handleDateSelect}
+          markedDates={markedDates}
+          markingType="simple"
+        />
       </View>
-      <Text style={styles.text}> <Image source={inativoIcon}/> Dias sem agenda </Text>
-      <Text style={styles.text}> <Image source={ativoIcon}/> Dias com agenda </Text>
+      <Text style={styles.text}> <Image source={inativoIcon} /> Dias sem agenda </Text>
+      <Text style={styles.text}> <Image source={ativoIcon} /> Dias com agenda </Text>
       <Footer />
     </View>
   )
@@ -137,20 +167,15 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 50,
-    marginLeft: 18
-  },
-  button: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: "#d3d3d3",
     padding: 10,
     borderRadius: 20,
-    width: 350,
-    height: 50,
-    marginBottom: 10
+    marginBottom: 10,
+    justifyContent: 'center',
   },
-  buttonText: {
-    color: "black",
-    fontSize: 18,
-    marginLeft: 10,
-    alignItems: "center",
+  pickerContainer: {
+    flex: 1,
   },
 });

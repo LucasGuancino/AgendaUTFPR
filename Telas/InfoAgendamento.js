@@ -9,14 +9,16 @@ const localizacaoicon = require("../icons/localizacao.png");
 const balaoicon = require("../icons/balao.png");
 const usericon = require("../icons/usericon.png");
 
-const InfoAgendamento = () => {
+const InfoAgendamento = ({route}) => {
+  const { dateString } = route.params;
   const navigation = useNavigation();
   const user = firebase.auth().currentUser;
+  const selectedUser = user.uid;
   const [agendamentos, setAgendamentos] = useState([]);
 
   useEffect(() => {
     async function ConsultarDados() {
-      await firebase.database().ref('Agenda').child(user.uid).on('value', (snapshot) => {
+      await firebase.database().ref('Agenda').child(dateString).child(user.uid).on('value', (snapshot) => {
         setAgendamentos([]);
 
         snapshot.forEach((item, index) => {
@@ -41,12 +43,12 @@ const InfoAgendamento = () => {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.name}>25/05/2023</Text>
+        <Text style={styles.name}>{dateString}</Text>
         <ScrollView>
         <View>
         {agendamentos.map((data, index) => (
             <View key={index}>
-              <TouchableOpacity onPress={() => navigation.navigate('Relatorio')}>      
+              <TouchableOpacity onPress={() => navigation.navigate('Relatorio', { dateString, selectedUser, index })}>      
                 <View style={styles.item}>
                   <Image source={relogioicon} style={styles.relogio} />
                   <Text style={styles.description}> {data.DataInicio} as {data.DataFim}</Text>
@@ -76,7 +78,7 @@ const InfoAgendamento = () => {
         </View>
         </ScrollView>
         </View>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Agendar')}> 
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Agendar', { dateString })}> 
           <Text style={styles.buttonText}>Editar Horarios de Agendamento</Text>
         </TouchableOpacity>
       <Footer />
@@ -101,8 +103,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20,
     fontWeight: "bold",
-    marginTop: -20
-
+    marginTop: -20,
+    color: "#000"
   },
   content: {
     marginTop: 60,

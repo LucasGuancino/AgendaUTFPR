@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from "react-native";
 import Footer from "../Comp/Footer";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import firebase from '../src/firebaseConfig';
 
 const relogioicon = require("../icons/relogio.png");
@@ -9,63 +9,57 @@ const localizacaoicon = require("../icons/localizacao.png");
 const balaoicon = require("../icons/balao.png");
 const usericon = require("../icons/usericon.png");
 
-const InfoAgendamento = () => {
+const InfoAgendamento = ({route}) => {
+  const { dateString, selectedUser } = route.params;
+  console.log(selectedUser);
+  console.log(dateString);
   const navigation = useNavigation();
   const user = firebase.auth().currentUser;
   const [agendamentos, setAgendamentos] = useState([]);
 
+  const fetchAgendamentos = async () => {
+    const snapshot = await firebase.database().ref('Agenda').child(dateString).child(selectedUser).once('value');
+    const agendamentos = [];
+
+    snapshot.forEach((item) => {
+      const data = {
+        codigo: item.key, // Usando item.key como código do agendamento
+        DataInicio: item.val().startTime,
+        DataFim: item.val().endTime,
+        local: item.val().location,
+        nomeServidor: item.val().nomeServidor,
+        nomeAluno: item.val().nomeAluno,
+        descricao: item.val().descricao,
+      };
+
+      agendamentos.push(data);
+    });
+
+    setAgendamentos(agendamentos);
+  };
+
   useEffect(() => {
-    const ConsultarDados = async () => {
-      const Servidor = 'Lucas';
-      const usersRef = firebase.database().ref('Usuarios');
-      let userId = '';
-
-      usersRef.on('value', (snapshot) => {
-        snapshot.forEach((childSnapshot) => {
-          const userData = childSnapshot.val();
-          const nome = userData.nome;
-          const childUserId = childSnapshot.key;
-
-          if (nome === Servidor) {
-            userId = childUserId;
-          }
-        });
-      });
-
-      await firebase.database().ref('Agenda').child(userId).on('value', (snapshot) => {
-        setAgendamentos([]);
-
-        snapshot.forEach((item) => {
-          let data = {
-            codigo: item.key, // Usando item.key como código do agendamento
-            DataInicio: item.val().startTime,
-            DataFim: item.val().endTime,
-            local: item.val().location,
-            nomeServidor: item.val().nomeServidor,
-            nomeAluno: item.val().nomeAluno,
-            descricao: item.val().descricao,
-          };
-
-          setAgendamentos((old) => [...old, data]);
-        });
-      });
-    };
-
-    ConsultarDados();
+    fetchAgendamentos();
   }, []);
 
-  const AbreTela = (codigo, nomeAluno) => {
+  useFocusEffect(
+    useCallback(() => {
+      fetchAgendamentos();
+    }, [])
+  );
+
+  const AbreTela = (index, nomeAluno) => {
     if (typeof nomeAluno === 'undefined' || nomeAluno === '') {
-      navigation.navigate('Agendamento', { codigo });
+      navigation.navigate('Agendamento', { dateString, selectedUser, index });
     } else {
-      navigation.navigate('Relatorio');
+      navigation.navigate('Relatorio',{ dateString, selectedUser, index });
     }
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.name}>25/05/2023</Text>
+        <Text style={styles.name}>{dateString}</Text>
         <ScrollView>
           <View>
             {agendamentos.map((data, index) => (

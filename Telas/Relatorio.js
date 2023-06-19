@@ -1,18 +1,50 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableWithoutFeedback, TouchableOpacity} from "react-native";
 import Footer from "../Comp/Footer";
 import { useNavigation } from '@react-navigation/native';
+import firebase from '../src/firebaseConfig';
 
 const voltar = require("../icons/voltar.png");
 const relatorio = require("../icons/relatorio.png");
 const importarRelatorio = require("../icons/importarRelatorio.png");
 const pdf = require("../icons/pdf.png");
 
-export default function Relatorio() {
+export default function Relatorio({ route }) {
+  const { dateString, selectedUser, index } = route.params;
   const navigation = useNavigation();
+  const [HoraInicio, setHoraInicio] = useState("");
+  const [HoraFim, setHoraFim] = useState("");
+  const [NomeAluno, setNomeAluno] = useState("");
+  const [Descricao, setDescricao] = useState("");
+  const [nomeServidor, setNomeServidor] = useState("");
+  const [Local, setLocal] = useState("");
+
+  useEffect(() => {
+    const AgendaRef = firebase.database().ref('Agenda').child(dateString).child(selectedUser).child(index);
+    const fetchAgendaData = async () => {
+      try {
+        const snapshot = await AgendaRef.once('value');
+        const AgendaData = snapshot.val();
+
+        if (AgendaData) {
+          setHoraInicio(AgendaData.startTime);
+          setHoraFim(AgendaData.endTime);
+          setNomeAluno(AgendaData.nomeAluno);
+          setDescricao(AgendaData.descricao);
+          setNomeServidor(AgendaData.nomeServidor);
+          setLocal(AgendaData.location);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar dados do agendamento:', error);
+      }
+    };
+
+    fetchAgendaData();
+  }, [dateString, index]);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>Atendimento N° 2000</Text>
+      <Text style={styles.titulo}>Atendimento N°{index}</Text>
 
       <View style={styles.imagem}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -24,12 +56,11 @@ export default function Relatorio() {
         <View style={styles.info}>
           <Text style={{marginLeft: 15, fontSize: 20, fontWeight: 'bold',}}>Informações:</Text>
           <Text></Text>
-          <Text style={{fontSize: 18, fontWeight: 'bold'}}>Data: </Text>
-          <Text style={{fontSize: 18, fontWeight: 'bold'}}>Aluno(a):</Text>
-          <Text style={{fontSize: 18, fontWeight: 'bold'}}>RA: </Text>
-          <Text style={{fontSize: 18, fontWeight: 'bold'}}>Nome: </Text>
-          <Text style={{fontSize: 18, fontWeight: 'bold'}}>Servidor: </Text>
-          <Text style={{fontSize: 18, fontWeight: 'bold'}}>Local: </Text>
+          <Text style={{fontSize: 18, fontWeight: 'bold'}}>Data: {dateString} - {HoraInicio} ás {HoraFim}</Text>
+          <Text style={{fontSize: 18, fontWeight: 'bold'}}>Aluno(a):{NomeAluno}</Text>
+          <Text style={{fontSize: 18, fontWeight: 'bold'}}>Descrição:{Descricao}</Text>
+          <Text style={{fontSize: 18, fontWeight: 'bold'}}>Servidor:{nomeServidor} </Text>
+          <Text style={{fontSize: 18, fontWeight: 'bold'}}>Local:{Local} </Text>
           </View>
         </TouchableWithoutFeedback>
 

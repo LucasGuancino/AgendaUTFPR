@@ -35,24 +35,6 @@ const Profile = () => {
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Calendario')}>
           <Text style={styles.buttonText}>Calendário</Text>
         </TouchableOpacity>
-        <View style={styles.item}>
-          <Text style={styles.description}> Seus próximos compromissos:</Text>
-        </View>
-        <View style={[styles.content2, { height: 180 }]}>
-          <ScrollView contentContainerStyle={styles.scrollView}>
-            <View style={styles.item}>
-              <Text style={styles.description1}> </Text>
-            </View>
-            <View style={styles.item}>
-              <Text style={styles.description1}>
-                
-              </Text>
-            </View>
-            <View style={styles.item}>
-              <Text style={styles.description1}> _________________________________________</Text>
-            </View>
-          </ScrollView>
-        </View>
       </View>
       <Footer />
     </View>
