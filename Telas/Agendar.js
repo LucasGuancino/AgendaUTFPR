@@ -39,6 +39,9 @@ export default function Agenda({ route }) {
         if (agendaData) {
           const loadedAgendas = Object.values(agendaData);
           setAgendas(loadedAgendas);
+        } else {
+          // Adicionar um item vazio se a lista estiver vazia
+          setAgendas([{ startTime: '', endTime: '', location: '', nomeServidor: nomeServidor }]);
         }
       } catch (error) {
         console.log(error);
@@ -139,7 +142,7 @@ export default function Agenda({ route }) {
                 <Image style={styles.icon} source={addIcon} />
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity onPress={handleRemoveTimeInput}>
+              <TouchableOpacity onPress={() => handleRemoveTimeInput(index)}>
                 <Image style={styles.icon} source={removeIcon} />
               </TouchableOpacity>
             )}

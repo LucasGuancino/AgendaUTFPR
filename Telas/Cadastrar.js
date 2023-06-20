@@ -1,11 +1,10 @@
-import { useState, Component } from 'react';
-import { StyleSheet, Text, View, TextInput,TouchableOpacity, Image} from 'react-native';
-import CheckBox from '../Comp/CheckBox';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import Checkbox from 'expo-checkbox';
 import firebase from '../src/firebaseConfig';
 
-export default function App(){
-
+export default function App() {
   const [nome, setNome] = useState('');
   const [sobrenome, setSobrenome] = useState('');
   const [telefone, setTelefone] = useState('');
@@ -32,7 +31,7 @@ export default function App(){
           isServidor: isServidor,
         })
         alert("Cadastro realizado com sucesso!")
-        return;
+        navigation.goBack();
       })
       .catch(() =>{
         alert("Erro ao cadastrar");
@@ -51,75 +50,125 @@ export default function App(){
     
   };
 
-  return(
-      <View style={styles.container}>
-        <Text style={styles.Cadastrar}>
-            Cadastrar
-        </Text>      
-        <TextInput placeholder='   Nome' style={styles.TextInput} value={nome} onChangeText={text=>setNome(text)} /> 
-        <TextInput placeholder='   Sobrenome' style={styles.TextInput} value={sobrenome} onChangeText={text=>setSobrenome(text)} /> 
-        <TextInput placeholder='   Telefone' style={styles.TextInput} value={telefone} onChangeText={text=>setTelefone(text)} /> 
-        <TextInput placeholder='   Email' style={styles.TextInput} value={email} onChangeText={text=>setEmail(text)} />  
-        <TextInput secureTextEntry={true} placeholder='   Senha' style={styles.TextInput} value={senha} onChangeText={text=>setSenha(text)} />  
-        <TextInput secureTextEntry={true} placeholder='   Confirmar senha' style={styles.TextInput} value={Confirmarsenha} onChangeText={text=>setConfirmarsenha(text)} />  
-        
-        <CheckBox checked={isServidor} value={isServidor} onChange={() => setIsServidor(!isServidor)} />
-                <TouchableOpacity style={styles.btnCadastro} onPress={()=>CadastrarDados()}>
-        <Text style={{color:'white', textAlign: 'center', fontSize:16}}> Cadastrar</Text>
+  function handleServidorPress() {
+    setIsServidor(!isServidor); // Inverter valor do estado do checkbox
+  }
 
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.Terlogin}> Já possui uma conta? Faça o Login! </Text>
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Cadastrar</Text>
+
+      <TextInput
+        placeholder="Nome"
+        style={styles.textInput}
+        value={nome}
+        onChangeText={(text) => setNome(text)}
+      />
+      <TextInput
+        placeholder="Sobrenome"
+        style={styles.textInput}
+        value={sobrenome}
+        onChangeText={(text) => setSobrenome(text)}
+      />
+      <TextInput
+        placeholder="Telefone"
+        style={styles.textInput}
+        value={telefone}
+        onChangeText={(text) => setTelefone(text)}
+      />
+      <TextInput
+        placeholder="Email"
+        style={styles.textInput}
+        value={email}
+        onChangeText={(text) => setEmail(text)}
+      />
+      <TextInput
+        secureTextEntry={true}
+        placeholder="Senha"
+        style={styles.textInput}
+        value={senha}
+        onChangeText={(text) => setSenha(text)}
+      />
+      <TextInput
+        secureTextEntry={true}
+        placeholder="Confirmar senha"
+        style={styles.textInput}
+        value={Confirmarsenha}
+        onChangeText={(text) => setConfirmarsenha(text)}
+      />
+
+      <View style={styles.checkboxContainer}>
+        <Checkbox
+          style={styles.checkbox}
+          value={isServidor}
+          onValueChange={setIsServidor}
+        />
+        <TouchableOpacity onPress={handleServidorPress}>
+          <Text style={styles.checkboxLabel}>Servidor da UTFPR</Text>
         </TouchableOpacity>
       </View>
-  )
+
+      <TouchableOpacity style={styles.btnCadastro} onPress={CadastrarDados}>
+        <Text style={styles.btnText}>Cadastrar</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        <Text style={styles.linkText}>Já possui uma conta? Faça o Login!</Text>
+      </TouchableOpacity>
+    </View>
+  );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
-    
+    paddingHorizontal: 20,
   },
-
-  TextInput:{
-    flexDirection:'column',
-    alignItems:'flex-end' ,
-    width:'80%',
-    backgroundColor:'#D9D9D9',
-    textAlignVertical: 'center',
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  textInput: {
+    width: '100%',
+    height: 50,
+    backgroundColor: '#D9D9D9',
     borderRadius: 30,
     marginBottom: 15,
     fontSize: 14,
-    padding: 12
+    paddingHorizontal: 20,
   },
-
-  btnCadastro:{
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  checkbox: {
+    marginRight: 10,
+  },
+  checkboxLabel: {
+    fontSize: 14,
+  },
+  btnCadastro: {
     backgroundColor: '#F24E1E',
-    width: '42.4%',
+    width: '100%',
     height: 50,
     borderRadius: 20,
     justifyContent: 'center',
-    marginTop: -20,
+    alignItems: 'center',
     marginBottom: 20,
   },
-
- Cadastrar:{
-  flex: 1,
-  fontSize: 40,
-  width: '55%',
-  height: 0,
-  fontWeight: 'bold',
-  padding: 11,
-  marginTop: 40
- },
-
- Terlogin:{ 
-  fontSize:14,
-  height: 19,
-  justifyContent: 'flex-start',
-  fontWeight: 'bold',
-  marginTop: 20
- }
+  btnText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  linkText: {
+    fontSize: 14,
+    marginTop: 20,
+    fontWeight: 'bold',
+  },
 });
