@@ -9,7 +9,7 @@ const localizacaoicon = require("../icons/localizacao.png");
 const balaoicon = require("../icons/balao.png");
 const usericon = require("../icons/usericon.png");
 
-const InfoAgendamento = ({route}) => {
+const InfoAgendamento = ({ route }) => {
   const { dateString } = route.params;
   const navigation = useNavigation();
   const user = firebase.auth().currentUser;
@@ -44,43 +44,39 @@ const InfoAgendamento = ({route}) => {
     <View style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.name}>{dateString}</Text>
-        <ScrollView>
-        <View>
-        {agendamentos.map((data, index) => (
-            <View key={index}>
-              <TouchableOpacity onPress={() => navigation.navigate('Relatorio', { dateString, selectedUser, index })}>      
-                <View style={styles.item}>
-                  <Image source={relogioicon} style={styles.relogio} />
-                  <Text style={styles.description}> {data.DataInicio} as {data.DataFim}</Text>
-                </View>
-                <View style={styles.item}>
-                  <Image source={usericon} style={styles.profile} />
-                  <Text style={styles.description}>Servidor: {data.nomeServidor} </Text>
-                </View>
-                <View style={styles.item}>
-                  <Image source={usericon} style={styles.profile} />
-                  <Text style={styles.description}>Aluno: {data.nomeAluno} </Text>
-                </View>        
-                <View style={styles.item}>
-                  <Image source={localizacaoicon} style={styles.localizacao} />
-                  <Text style={styles.description}> {data.local}</Text>
-                </View>
-                <View style={styles.item}>
-                  <Image source={balaoicon} style={styles.balao} />
-                  <Text style={styles.description}> {data.descricao}</Text>
-                </View>
-                <View style={styles.item}>
-                  <Text style={styles.description}> ____________________________ </Text>
-                </View>
-              </TouchableOpacity>
-            </View>
+        <ScrollView style={styles.scrollView}>
+          {agendamentos.map((data, index) => (
+            <TouchableOpacity key={index} onPress={() => navigation.navigate('Relatorio', { dateString, selectedUser, index })}>
+              <View style={styles.item}>
+                <Image source={relogioicon} style={styles.relogio} />
+                <Text style={styles.description}> {data.DataInicio} as {data.DataFim}</Text>
+              </View>
+              <View style={styles.item}>
+                <Image source={usericon} style={styles.profile} />
+                <Text style={styles.description}>Servidor: {data.nomeServidor} </Text>
+              </View>
+              <View style={styles.item}>
+                <Image source={usericon} style={styles.profile} />
+                <Text style={styles.description}>Aluno: {data.nomeAluno} </Text>
+              </View>
+              <View style={styles.item}>
+                <Image source={localizacaoicon} style={styles.localizacao} />
+                <Text style={styles.description}> {data.local}</Text>
+              </View>
+              <View style={styles.item}>
+                <Image source={balaoicon} style={styles.balao} />
+                <Text style={styles.description}> {data.descricao}</Text>
+              </View>
+              <View style={styles.item}>
+                <Text style={styles.description}> _____________________________ </Text>
+              </View>
+            </TouchableOpacity>
           ))}
-        </View>
         </ScrollView>
-        </View>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Agendar', { dateString })}> 
-          <Text style={styles.buttonText}>Editar Horarios de Agendamento</Text>
-        </TouchableOpacity>
+      </View>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Agendar', { dateString })}>
+        <Text style={styles.buttonText}>Editar Horários de Agendamento</Text>
+      </TouchableOpacity>
       <Footer />
     </View>
   );
@@ -90,10 +86,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-   
   },
   name: {
-    
     backgroundColor: "#a9a9a9dc",
     padding: 20,
     borderRadius: 40,
@@ -123,21 +117,25 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    marginBottom: 10
+    marginBottom: 10,
+    flex: 1,
   },
-  localizacao:{
+  localizacao: {
     marginLeft: -5,
   },
-  balao:{
+  balao: {
     marginLeft: 0,
   },
-  relogio:{
+  relogio: {
     marginLeft: 0,
   },
-  profile:{
+  profile: {
     marginLeft: -5,
     width: 25,
-    height:25,
+    height: 25,
+  },
+  scrollView: {
+    maxHeight: 350, // Define a altura máxima desejada
   },
   button: {
     marginTop: 20,
@@ -154,7 +152,5 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center"
   },
-});
-
-export default InfoAgendamento;
-
+});  
+  export default InfoAgendamento;

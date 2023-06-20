@@ -60,7 +60,7 @@ const InfoAgendamento = ({route}) => {
     <View style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.name}>{dateString}</Text>
-        <ScrollView>
+        <ScrollView style={styles.scrollView}>
           <View>
             {agendamentos.map((data, index) => (
               <View key={index}>
@@ -133,7 +133,8 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    marginBottom: 10
+    marginBottom: 10,
+    flex: 1,
   },
   localizacao: {
     marginLeft: -5,
@@ -148,6 +149,9 @@ const styles = StyleSheet.create({
     marginLeft: -5,
     width: 25,
     height: 25,
+  },
+  scrollView: {
+    maxHeight: 380,
   },
 });
 
