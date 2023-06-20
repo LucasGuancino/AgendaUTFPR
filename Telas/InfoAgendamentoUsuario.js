@@ -11,8 +11,6 @@ const usericon = require("../icons/usericon.png");
 
 const InfoAgendamento = ({route}) => {
   const { dateString, selectedUser } = route.params;
-  console.log(selectedUser);
-  console.log(dateString);
   const navigation = useNavigation();
   const user = firebase.auth().currentUser;
   const [agendamentos, setAgendamentos] = useState([]);

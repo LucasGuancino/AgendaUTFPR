@@ -35,6 +35,10 @@ export default function Agendamento({ route }) {
 
   async function agendarDados() {
     try {
+      if (descricao.trim() === '') {
+        alert('A descrição do agendamento não pode estar vazia.');
+        return;
+      }
       const refUsuarios = firebase.database().ref("Usuarios").child(user.uid);
   
       refUsuarios.once("value", (snapshot) => {

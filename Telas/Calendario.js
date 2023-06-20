@@ -68,9 +68,12 @@ export default function Calendario() {
   const [selectedDate, setSelectedDate] = useState("");
 
   const handleDateSelect = (date) => {
+    if (!isServidor && !selectedUser) {
+      alert("Por favor, selecione um servidor antes de selecionar uma data.");
+      return;
+    }
     const newMarkedDates = { ...initialMarkedDates };
     const dateString = date.dateString;
-    console.log(date.dateString);
     if (selectedDate) {
       newMarkedDates[selectedDate] = {
         ...newMarkedDates[selectedDate],
