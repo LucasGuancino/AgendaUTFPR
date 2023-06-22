@@ -72,6 +72,7 @@ export default function Calendario() {
       alert("Por favor, selecione um servidor antes de selecionar uma data.");
       return;
     }
+    
     const newMarkedDates = { ...initialMarkedDates };
     const dateString = date.dateString;
     if (selectedDate) {
@@ -88,11 +89,18 @@ export default function Calendario() {
     setSelectedDate(dateString);
     setMarkedDates(newMarkedDates);
 
-    if (isServidor) {
-      navigation.navigate('InfoAgendamento', { dateString });
-    } else {
-      navigation.navigate('InfoAgendamentoUsuario', { dateString, selectedUser });
-    }
+    firebase.database().ref('Agenda').child(dateString).on('value', (snapshot) => {
+      const existeData = snapshot.val();
+        if (isServidor) {
+          navigation.navigate('InfoAgendamento', { dateString });
+        } else {
+          if(existeData === null){
+            alert('Não possui agendamentos para o dia selecionado');
+          }else{
+            navigation.navigate('InfoAgendamentoUsuario', { dateString, selectedUser });
+          }
+        }
+    });
   };
 
   const containerStyles = StyleSheet.create({
